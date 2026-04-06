@@ -18,14 +18,14 @@ skills/
 
 ## Skill Naming Convention
 
-**ML workflow skills** use `ml-` prefix in their directory name:
+**ML workflow skills** use `ml-` prefix in their skill name:
 - `ml-explore` - Profile and narrate dataset characteristics
 - `ml-cluster` - Find natural groups with plain-language labels
 - `ml-anomalies` - Detect and explain unusual items
 - `ml-rag` - Build and query retrieval-augmented generation pipelines
 - `ml-analyze` - End-to-end analysis from data to insights report
 
-Slash commands appear as `compound-ml:<skill-directory-name>` (e.g., `compound-ml:ml-explore`).
+Slash commands appear as `compound-ml:ml-explore`, `compound-ml:ml-cluster`, etc.
 
 ## Agent Namespacing
 
@@ -39,7 +39,7 @@ Examples:
 
 ### YAML Frontmatter (Required)
 
-- [ ] `name:` present and matches directory name (lowercase-with-hyphens)
+- [ ] `name:` present and uses colon-namespaced format (e.g., `ml-explore`)
 - [ ] `description:` present and describes what it does and when to use it
 - [ ] `description:` value is quoted (single or double) if it contains colons
 
