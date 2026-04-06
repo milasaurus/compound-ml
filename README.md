@@ -8,4 +8,5 @@ Plugin marketplace for ML workflow tools. See [plugins/compound-ml/README.md](pl
 claude /plugin marketplace add milasaurus/compound-ml
 ```
 
-<img width="785" height="242" alt="image" src="https://github.com/user-attachments/assets/bef29324-21b5-49f6-8423-42d6b0bd3950" />
+<img width="1691" height="302" alt="image" src="https://github.com/user-attachments/assets/88a30346-3715-43b4-b852-21d11a126d26" />
+
