@@ -53,7 +53,7 @@ See `skills/ml-explore/references/setup.md` for detailed setup instructions.
 ## Installation
 
 ```bash
-claude /plugin install compound-ml
+claude /plugin marketplace add milasaurus/compound-ml
 ```
 
 ## Not In Scope

@@ -6,7 +6,7 @@ Give me any data — docs, logs, user behavior, API responses — and I'll surfa
 
 You need:
 - **Python 3.10+**
-- **Claude Code** with the compound-ml plugin installed (`claude /plugin install compound-ml`)
+- **Claude Code** with the compound-ml plugin installed (`claude /plugin marketplace add milasaurus/compound-ml`)
 
 Set up a virtual environment and install the core packages:
 
