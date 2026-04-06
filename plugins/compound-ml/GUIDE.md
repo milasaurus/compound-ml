@@ -278,19 +278,23 @@ Embeddings matter when you're working with text data. They convert text into num
 
 ## Finding Data to Explore
 
-Need a dataset to try this on? [Google Dataset Search](https://datasetsearch.research.google.com/) indexes millions of publicly available datasets across the web. Search for a topic you're interested in, download a CSV or JSON file, and point any skill at it.
+Need a dataset to try this on? [Kaggle Datasets](https://www.kaggle.com/datasets) hosts thousands of free, downloadable datasets across every domain. Search for a topic you're interested in, download a CSV, and point any skill at it.
 
-### Recommended Datasets
+### Recommended Kaggle Datasets
 
 These datasets work well with compound-ml's unsupervised, foundation-model-powered approach:
 
-**[Spotify Tracks Dataset](https://www.kaggle.com/datasets/maharshipandya/-spotify-tracks-dataset) (Kaggle)** — Best starting point. ~170k tracks with rich audio features (danceability, energy, valence, tempo, genre). Try `ml-cluster` to discover natural music genres without labels, `ml-anomalies` to find outlier tracks with unusual feature combinations, or `ml-analyze` for a full pipeline run.
+**[Spotify Tracks Dataset](https://www.kaggle.com/datasets/maharshipandya/-spotify-tracks-dataset)** — Best starting point. ~170k tracks with rich audio features (danceability, energy, valence, tempo, genre). Try `ml-cluster` to discover natural music genres without labels, `ml-anomalies` to find outlier tracks with unusual feature combinations, or `ml-analyze` for a full pipeline run.
 
-**[Music Streaming Sessions Dataset](https://research.atspotify.com/publications/the-music-streaming-sessions-dataset-short-paper) (Spotify Research)** — 150M real listening sessions showing actual user behavior sequences. Great for anomaly detection and clustering listener types. Very large — expect longer processing times and consider sampling.
+**[Customer Personality Analysis](https://www.kaggle.com/datasets/imakash3011/customer-personality-analysis)** — 2,240 customers with demographics, spending habits, and campaign responses. Great for `ml-cluster` (find customer segments) and `ml-anomalies` (flag unusual purchasing patterns).
 
-**[Spotify Global Streaming Data 2024](https://datasetsearch.research.google.com/) (Google Dataset Search)** — ~500 entries of country-level streaming data. Small enough to move fast and good for a first walkthrough, but less interesting for clustering due to its size.
+**[Credit Card Fraud Detection](https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud)** — 284k transactions with 30 anonymized features. Highly imbalanced (0.17% fraud). Ideal for `ml-anomalies` — see if unsupervised detection can surface the fraudulent transactions without labels.
 
-Start with the Kaggle Tracks dataset — it's the right size, has features that embed well, and gives every skill something meaningful to work with.
+**[BBC News Articles](https://www.kaggle.com/datasets/shivamkushwaha/bbc-full-text-document-classification)** — 2,225 articles across 5 categories. Good for `ml-cluster` (topic discovery from text) and `ml-rag` (build a searchable news knowledge base).
+
+**[Wine Quality](https://www.kaggle.com/datasets/uciml/red-wine-quality-cortez-et-al-2009)** — 1,600 wines with physicochemical measurements. Small, numeric, and fast — good for a first walkthrough of `ml-explore` → `ml-cluster` → `ml-anomalies`.
+
+Start with the Spotify Tracks dataset — it's the right size, has features that embed well, and gives every skill something meaningful to work with.
 
 ## Checkpointing and Resuming
 
