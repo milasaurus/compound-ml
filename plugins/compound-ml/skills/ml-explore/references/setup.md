@@ -13,12 +13,6 @@ python3 --version
 These packages are needed for basic data exploration and profiling:
 
 ```bash
-pip install pandas scikit-learn matplotlib
-```
-
-Or with uv:
-
-```bash
 uv pip install pandas scikit-learn matplotlib
 ```
 
@@ -27,7 +21,7 @@ uv pip install pandas scikit-learn matplotlib
 For unsupervised clustering and dimensionality reduction:
 
 ```bash
-pip install umap-learn hdbscan
+uv pip install umap-learn hdbscan
 ```
 
 Note: `hdbscan` has C extensions and may require a C compiler. On macOS, install Xcode command line tools (`xcode-select --install`). On Linux, install `build-essential`.
@@ -41,7 +35,7 @@ Embeddings improve the quality of clustering and anomaly detection on text data.
 Install sentence-transformers for local embedding generation:
 
 ```bash
-pip install sentence-transformers
+uv pip install sentence-transformers
 ```
 
 This downloads a ~100MB model on first use. Uses the `all-MiniLM-L6-v2` model by default. Completely free and private — all processing runs locally.
@@ -57,7 +51,7 @@ If sentence-transformers is not installed, skills that need text representations
 For building and querying document retrieval pipelines:
 
 ```bash
-pip install chromadb rank-bm25
+uv pip install chromadb rank-bm25
 ```
 
 ChromaDB provides local vector storage (no external server needed). rank-bm25 adds keyword-based retrieval for hybrid search.

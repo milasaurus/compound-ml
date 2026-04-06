@@ -32,7 +32,7 @@ If pandas is not installed, report:
 
 > pandas is required for data exploration. Install it with:
 > ```
-> pip install pandas
+> uv pip install pandas
 > ```
 > See `references/setup.md` for full setup instructions.
 

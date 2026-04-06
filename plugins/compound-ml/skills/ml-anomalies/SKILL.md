@@ -163,3 +163,7 @@ Same pattern as `ml-cluster`: check for recent checkpoints (<24h) on start, offe
 - **Dataset too small (<10 rows):** Use LLM-only reasoning instead of statistical methods
 - **All items flagged as anomalous:** Report "the detection methods flagged an unusually high number of items — this usually means the data is very diverse rather than having specific outliers" and show only the top 10 by consensus score
 - **Embedding API failure:** Save completed work to checkpoint, report error, suggest retry
+
+## Reference Files
+
+- `references/anomaly-detection-guide.md` — Plain-language explanation of how anomaly detection works
