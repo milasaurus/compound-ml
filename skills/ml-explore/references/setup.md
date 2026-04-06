@@ -36,17 +36,7 @@ Note: `hdbscan` has C extensions and may require a C compiler. On macOS, install
 
 Embeddings improve the quality of clustering and anomaly detection on text data. Without embeddings, skills fall back to TF-IDF (lower quality but always available).
 
-### Option A: OpenAI Embeddings (Recommended)
-
-Set the `OPENAI_API_KEY` environment variable:
-
-```bash
-export OPENAI_API_KEY=sk-...
-```
-
-This uses the `text-embedding-3-small` model by default. Embedding costs are typically under $0.01 per 1000 rows of text data.
-
-### Option B: Local Embeddings (Free, No API Key)
+### Option A: sentence-transformers (Recommended)
 
 Install sentence-transformers for local embedding generation:
 
@@ -54,13 +44,13 @@ Install sentence-transformers for local embedding generation:
 pip install sentence-transformers
 ```
 
-This downloads a ~100MB model on first use. Slower than API embeddings but completely free and private.
+This downloads a ~100MB model on first use. Uses the `all-MiniLM-L6-v2` model by default. Completely free and private — all processing runs locally.
 
-### Option C: No Embeddings (TF-IDF Fallback)
+### Option B: No Embeddings (TF-IDF Fallback)
 
-If neither option is configured, skills that need text representations fall back to TF-IDF vectorization via scikit-learn. This works but produces lower-quality clusters and anomaly detection for text data. Numeric data does not need embeddings.
+If sentence-transformers is not installed, skills that need text representations fall back to TF-IDF vectorization via scikit-learn. This works but produces lower-quality clusters and anomaly detection for text data. Numeric data does not need embeddings.
 
-**Note:** RAG pipelines (`ml-rag`) require real embeddings (Option A or B). TF-IDF is not sufficient for retrieval-augmented generation.
+**Note:** RAG pipelines (`ml-rag`) require sentence-transformers. TF-IDF is not sufficient for retrieval-augmented generation.
 
 ## RAG Pipeline Packages
 
@@ -94,7 +84,5 @@ try:
     import chromadb; print(f'chromadb {chromadb.__version__}')
 except ImportError: print('chromadb: not installed (needed for RAG)')
 import os
-if os.environ.get('OPENAI_API_KEY'): print('OpenAI API key: configured')
-else: print('OpenAI API key: not set')
 "
 ```
