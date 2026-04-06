@@ -1,0 +1,31 @@
+{
+  "name": "compound-ml",
+  "owner": {
+    "name": "Mila Wilson",
+    "url": "https://github.com/milasaurus"
+  },
+  "metadata": {
+    "description": "ML workflow tools using foundation models — explore, cluster, detect anomalies, and build RAG pipelines without labeled data.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "compound-ml",
+      "description": "ML workflow tools using foundation models — explore, cluster, detect anomalies, and build RAG pipelines without ML expertise.",
+      "author": {
+        "name": "Mila Wilson",
+        "url": "https://github.com/milasaurus"
+      },
+      "tags": [
+        "machine-learning",
+        "data-exploration",
+        "clustering",
+        "anomaly-detection",
+        "rag",
+        "foundation-models",
+        "unsupervised-learning"
+      ],
+      "source": "./plugins/compound-ml"
+    }
+  ]
+}
