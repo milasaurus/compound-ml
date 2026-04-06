@@ -250,6 +250,8 @@ A full markdown report with:
 
 The report is saved to `.ml-checkpoints/ml-analyze/<timestamp>/report.md` and displayed directly.
 
+<img width="1706" height="869" alt="image" src="https://github.com/user-attachments/assets/d3162a9c-8180-4b9f-a4f4-ac2990953467" />
+
 **Tips:**
 - The skill automatically picks which analyses to run based on your data type and objective. Text data gets clustering + anomaly detection by default. Numeric data does too. If you just want a profile, say "explore this data" or use `ml-explore` directly.
 - Results go through an automated quality review before the report is generated. If something looks off (degenerate clusters, suspicious anomaly counts), the pipeline adjusts and retries.
