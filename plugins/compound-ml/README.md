@@ -35,17 +35,17 @@ Agents are specialized subagents invoked by skills — not called directly.
 ### Recommended Packages
 
 ```bash
-pip install pandas scikit-learn umap-learn hdbscan matplotlib
+uv pip install pandas scikit-learn umap-learn hdbscan matplotlib
 ```
 
 For embedding-based workflows (higher quality clustering/anomaly detection):
 ```bash
-pip install sentence-transformers
+uv pip install sentence-transformers
 ```
 
 For RAG pipelines:
 ```bash
-pip install chromadb rank-bm25
+uv pip install chromadb rank-bm25
 ```
 
 See `skills/ml-explore/references/setup.md` for detailed setup instructions.

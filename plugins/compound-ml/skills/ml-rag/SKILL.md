@@ -39,13 +39,13 @@ except ImportError: print('sentence-transformers: NOT installed')
 **Required:** chromadb. If not installed:
 > ChromaDB is required for RAG pipelines. Install it with:
 > ```
-> pip install chromadb
+> uv pip install chromadb
 > ```
 
 **Required:** sentence-transformers. If not installed:
 > RAG requires sentence-transformers for quality retrieval. Install it with:
 > ```
-> pip install sentence-transformers
+> uv pip install sentence-transformers
 > ```
 > See `references/setup.md` for detailed setup instructions.
 
@@ -143,7 +143,7 @@ with open('.ml-rag-index/bm25_corpus.json', 'w') as f:
 ```
 
 If rank-bm25 is not installed, skip BM25 and use vector-only retrieval with a note:
-> "For better retrieval quality, install rank-bm25: `pip install rank-bm25`"
+> "For better retrieval quality, install rank-bm25: `uv pip install rank-bm25`"
 
 ## Query Mode
 

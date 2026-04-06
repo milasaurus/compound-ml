@@ -13,10 +13,10 @@
 
 | Format | Extension | Required Package | Install Command |
 |--------|-----------|-----------------|-----------------|
-| Excel | `.xlsx` | openpyxl | `pip install openpyxl` |
-| Excel (legacy) | `.xls` | xlrd | `pip install xlrd` |
-| Feather | `.feather` | pyarrow | `pip install pyarrow` |
-| HDF5 | `.h5`, `.hdf5` | tables | `pip install tables` |
+| Excel | `.xlsx` | openpyxl | `uv pip install openpyxl` |
+| Excel (legacy) | `.xls` | xlrd | `uv pip install xlrd` |
+| Feather | `.feather` | pyarrow | `uv pip install pyarrow` |
+| HDF5 | `.h5`, `.hdf5` | tables | `uv pip install tables` |
 
 ## Text Corpora
 

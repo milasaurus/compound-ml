@@ -11,18 +11,20 @@ You need:
 Set up a virtual environment and install the core packages:
 
 ```bash
-python3 -m venv venv
-source venv/bin/activate
-pip install pandas scikit-learn matplotlib
+uv venv
+source .venv/bin/activate
+uv pip install pandas scikit-learn matplotlib
 ```
 
 For the full experience (better clustering, anomaly detection, and RAG):
 
 ```bash
-pip install umap-learn hdbscan sentence-transformers chromadb rank-bm25
+uv pip install umap-learn hdbscan sentence-transformers chromadb rank-bm25
 ```
 
-Remember to activate the virtual environment (`source venv/bin/activate`) before running any skills.
+If you don't have [uv](https://docs.astral.sh/uv/) installed: `curl -LsSf https://astral.sh/uv/install.sh | sh`
+
+Remember to activate the virtual environment (`source .venv/bin/activate`) before running any skills.
 
 Verify your environment:
 
@@ -206,7 +208,7 @@ If you run `/compound-ml:ml-rag` without a mode and an index already exists, it 
 - **Build mode:** Confirmation of how many documents and chunks were indexed
 - **Query mode:** A direct answer with source citations (file name, section heading, and a relevant quote from each source)
 
-**Important — embedding requirement:** Unlike the other skills, RAG requires sentence-transformers. TF-IDF is not sufficient for retrieval quality. Make sure you have it installed: `pip install sentence-transformers`
+**Important — embedding requirement:** Unlike the other skills, RAG requires sentence-transformers. TF-IDF is not sufficient for retrieval quality. Make sure you have it installed: `uv pip install sentence-transformers`
 
 **Tips:**
 - Supported document formats: `.md`, `.txt`, `.text`, `.pdf`, `.html`, `.rst`
@@ -269,7 +271,7 @@ Embeddings matter when you're working with text data. They convert text into num
 
 | Provider | Quality | Cost | Setup |
 |---|---|---|---|
-| sentence-transformers | Good | Free, runs locally | `pip install sentence-transformers` (~100MB model download on first use) |
+| sentence-transformers | Good | Free, runs locally | `uv pip install sentence-transformers` (~100MB model download on first use) |
 | TF-IDF (fallback) | Basic | Free | Always available via scikit-learn |
 
 **Numeric data does not need embeddings** — the numbers are used directly after scaling.
