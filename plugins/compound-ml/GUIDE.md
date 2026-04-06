@@ -172,6 +172,8 @@ The context is optional but helps frame the explanations.
 - Summary of whether anomalies share patterns or are isolated
 - Suggested next steps
 
+<img width="1701" height="293" alt="image" src="https://github.com/user-attachments/assets/dd565bd1-5327-4c7c-b859-65c2dd02f19b" />
+
 **How it works under the hood:** Two independent detection methods (Isolation Forest and Local Outlier Factor) each vote on what's unusual. Items flagged by both methods rank highest — this consensus approach reduces false positives.
 
 **Tips:**
