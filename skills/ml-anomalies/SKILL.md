@@ -40,7 +40,7 @@ Write data profile to checkpoint: `.ml-checkpoints/ml-anomalies/<timestamp>/prof
 
 Follow the same representation strategy as `ml-cluster`:
 
-**For text data:** Detect embedding provider (OpenAI > sentence-transformers > TF-IDF fallback). Estimate and confirm cost for datasets over 5000 rows.
+**For text data:** Detect embedding provider (sentence-transformers > TF-IDF fallback).
 
 **For numeric data:** Use numeric columns directly with `StandardScaler` normalization.
 
@@ -129,7 +129,7 @@ Format the output as:
 **Items analyzed:** [N]
 **Unusual items found:** [M] ([X]% of dataset)
 **Detection methods:** Isolation Forest + Local Outlier Factor (consensus)
-**Representations:** [OpenAI embeddings / sentence-transformers / TF-IDF / numeric features]
+**Representations:** [sentence-transformers / TF-IDF / numeric features]
 
 ### Most Unusual Items
 
@@ -159,7 +159,7 @@ Same pattern as `ml-cluster`: check for recent checkpoints (<24h) on start, offe
 ## Error Handling
 
 - **sklearn not installed:** Report install instructions and stop (sklearn is required for both detectors)
-- **No embedding API for text data:** Fall back to TF-IDF with quality note
+- **No sentence-transformers for text data:** Fall back to TF-IDF with quality note
 - **Dataset too small (<10 rows):** Use LLM-only reasoning instead of statistical methods
 - **All items flagged as anomalous:** Report "the detection methods flagged an unusually high number of items — this usually means the data is very diverse rather than having specific outliers" and show only the top 10 by consensus score
 - **Embedding API failure:** Save completed work to checkpoint, report error, suggest retry

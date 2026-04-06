@@ -8,7 +8,7 @@ argument-hint: "build <directory> | query <question>"
 
 Build a searchable index from a collection of documents, then answer questions grounded in those documents with source citations. No ML expertise required — chunking, embedding, indexing, and retrieval are all handled automatically.
 
-**Important:** Unlike other ml skills, RAG requires a real embedding provider (OpenAI API or sentence-transformers). TF-IDF is not sufficient for retrieval quality. If no embedding provider is available, report this clearly and point to `references/setup.md`.
+**Important:** Unlike other ml skills, RAG requires sentence-transformers for embeddings. TF-IDF is not sufficient for retrieval quality. If sentence-transformers is not installed, report this clearly and point to `references/setup.md`.
 
 ## Modes
 
@@ -31,13 +31,8 @@ Verify required packages:
 python3 -c "
 import chromadb; print(f'chromadb {chromadb.__version__}')
 try:
-    import openai; print('openai: available')
-except ImportError: pass
-try:
     import sentence_transformers; print('sentence-transformers: available')
-except ImportError: pass
-import os
-if os.environ.get('OPENAI_API_KEY'): print('OpenAI API key: configured')
+except ImportError: print('sentence-transformers: NOT installed')
 "
 ```
 
@@ -47,11 +42,11 @@ if os.environ.get('OPENAI_API_KEY'): print('OpenAI API key: configured')
 > pip install chromadb
 > ```
 
-**Required:** At least one embedding provider (OpenAI or sentence-transformers). If neither is available:
-> RAG requires an embedding provider for quality retrieval. Either:
-> - Set `OPENAI_API_KEY` for OpenAI embeddings, or
-> - Install sentence-transformers: `pip install sentence-transformers`
->
+**Required:** sentence-transformers. If not installed:
+> RAG requires sentence-transformers for quality retrieval. Install it with:
+> ```
+> pip install sentence-transformers
+> ```
 > See `references/setup.md` for detailed setup instructions.
 
 Do not proceed if either requirement is unmet. TF-IDF is not a viable fallback for RAG.
@@ -104,7 +99,7 @@ Report: "Created [N] chunks from [M] documents (average [X] tokens per chunk)"
 
 ### Phase 4: Generate Embeddings and Index
 
-Select embedding provider (OpenAI > sentence-transformers):
+Generate embeddings using sentence-transformers:
 
 ```python
 import chromadb
@@ -115,9 +110,6 @@ collection = client.get_or_create_collection(
     metadata={"hnsw:space": "cosine"}
 )
 ```
-
-For OpenAI embeddings, estimate cost before proceeding:
-> "Indexing [N] chunks. Estimated embedding cost: ~$[X] using OpenAI. Proceed?"
 
 Generate embeddings and add to ChromaDB in batches of 100:
 
@@ -247,7 +239,7 @@ If the retrieved context does not contain relevant information:
 ## Error Handling
 
 - **ChromaDB not installed:** Report install instructions, do not proceed
-- **No embedding provider:** Report clearly that RAG requires embeddings, point to setup.md
+- **No sentence-transformers:** Report clearly that RAG requires sentence-transformers, point to setup.md
 - **Empty directory:** "No supported documents found in [path]. Supported formats: .md, .txt, .pdf, .html, .rst"
 - **Index does not exist (query mode):** Prompt to build first
 - **Embedding API failure during indexing:** Save progress to ChromaDB (partial index is usable), report error

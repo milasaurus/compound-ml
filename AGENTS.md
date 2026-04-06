@@ -66,9 +66,8 @@ Examples:
 ## Embedding Provider Detection
 
 Skills that need embeddings follow this detection cascade:
-1. OpenAI API — check for `OPENAI_API_KEY` environment variable
-2. Local sentence-transformers — check `python3 -c "import sentence_transformers"`
-3. TF-IDF fallback — always available via sklearn (not viable for RAG)
+1. Local sentence-transformers — check `python3 -c "import sentence_transformers"`
+2. TF-IDF fallback — always available via sklearn (not viable for RAG)
 
 ## Checkpointing
 

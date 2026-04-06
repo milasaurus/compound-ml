@@ -30,7 +30,7 @@ AI models have a limited "context window" — the amount of text they can consid
 ## What Makes a Good RAG Pipeline
 
 - **Good chunking** — Splitting documents at natural boundaries (headings, paragraphs) preserves meaning better than splitting at arbitrary character counts
-- **Quality embeddings** — OpenAI or sentence-transformers produce better results than simple keyword matching
+- **Quality embeddings** — sentence-transformers produces better results than simple keyword matching
 - **Hybrid retrieval** — Using both meaning-based and keyword search catches more relevant content than either alone
 - **Focused context** — Giving the AI fewer, more relevant chunks produces better answers than dumping everything in
 
@@ -38,7 +38,7 @@ AI models have a limited "context window" — the amount of text they can consid
 
 - **Only knows what's indexed** — If the answer isn't in your documents, RAG can't find it
 - **Chunking can split context** — Sometimes the answer spans a section boundary. The overlap between chunks helps but doesn't eliminate this
-- **Embedding quality matters** — TF-IDF (the simplest approach) doesn't understand meaning, just word overlap. For serious use, configure OpenAI or sentence-transformers embeddings
+- **Embedding quality matters** — TF-IDF (the simplest approach) doesn't understand meaning, just word overlap. For serious use, install sentence-transformers
 - **Stale indexes** — If you update your documents, rebuild the index to include the changes
 
 ## When to Use RAG

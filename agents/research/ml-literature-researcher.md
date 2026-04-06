@@ -21,7 +21,7 @@ You will receive:
 - **Objective:** What the user wants to learn from their data
 - **Data profile:** Shape, types, distributions, quality metrics
 - **Available packages:** Which ML packages are installed
-- **Embedding provider:** Which embedding method is available (OpenAI, sentence-transformers, TF-IDF only)
+- **Embedding provider:** Which embedding method is available (sentence-transformers, TF-IDF only)
 
 ## Recommendation Framework
 

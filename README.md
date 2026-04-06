@@ -43,8 +43,6 @@ For embedding-based workflows (higher quality clustering/anomaly detection):
 pip install sentence-transformers
 ```
 
-Or set the `OPENAI_API_KEY` environment variable to use OpenAI embeddings.
-
 For RAG pipelines:
 ```bash
 pip install chromadb rank-bm25

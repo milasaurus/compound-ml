@@ -53,14 +53,8 @@ Choose representation strategy based on data type:
 
 Detect embedding provider using the cascade defined in AGENTS.md:
 
-1. **OpenAI API** (if `OPENAI_API_KEY` is set): Use `text-embedding-3-small` model. For datasets over 1000 rows, process in batches of 500 and report progress.
-2. **sentence-transformers** (if installed): Use `all-MiniLM-L6-v2` model. Process locally.
-3. **TF-IDF fallback**: Use `sklearn.feature_extraction.text.TfidfVectorizer` with `max_features=5000`. Report to the user: "Using basic text analysis (TF-IDF). For higher quality results, install sentence-transformers or set OPENAI_API_KEY."
-
-Before generating embeddings via API, estimate and report the cost:
-> "This dataset has [N] text items. Estimated embedding cost: ~$[X] using OpenAI. Proceed?"
-
-Wait for user confirmation on datasets over 5000 rows before making API calls.
+1. **sentence-transformers** (if installed): Use `all-MiniLM-L6-v2` model. Process locally. For datasets over 1000 rows, process in batches of 500 and report progress.
+2. **TF-IDF fallback**: Use `sklearn.feature_extraction.text.TfidfVectorizer` with `max_features=5000`. Report to the user: "Using basic text analysis (TF-IDF). For higher quality results, install sentence-transformers."
 
 **For numeric data:**
 
@@ -151,7 +145,7 @@ Format the output as:
 
 **Groups found:** [N]
 **Method:** [HDBSCAN/KMeans] [with UMAP reduction / on raw features]
-**Representations:** [OpenAI embeddings / sentence-transformers / TF-IDF / numeric features]
+**Representations:** [sentence-transformers / TF-IDF / numeric features]
 **Quality:** [Good/Fair/Poor] (silhouette score: [X])
 
 ### Group 1: [Label] ([N] items, [X]% of data)
@@ -189,7 +183,7 @@ Each phase writes its output to the checkpoint directory before proceeding.
 
 ## Error Handling
 
-- **No embedding API and no sentence-transformers:** Fall back to TF-IDF with a quality note
+- **No sentence-transformers installed:** Fall back to TF-IDF with a quality note
 - **UMAP not installed:** Skip dimensionality reduction, cluster on raw features
 - **HDBSCAN not installed:** Use KMeans instead
 - **All items in one cluster:** Report "the data appears very homogeneous" and suggest exploring with `ml-explore`

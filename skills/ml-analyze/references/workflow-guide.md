@@ -28,7 +28,7 @@ The specific methods chosen depend on what packages are installed and what embed
 
 For the analysis algorithms to work, every item in your data needs a numerical representation:
 
-- **Best quality**: OpenAI embeddings or sentence-transformers capture the meaning of text
+- **Best quality**: sentence-transformers embeddings capture the meaning of text
 - **Acceptable quality**: TF-IDF captures word patterns (available even without API keys)
 - **Numeric data**: Used directly after scaling to make all features comparable
 

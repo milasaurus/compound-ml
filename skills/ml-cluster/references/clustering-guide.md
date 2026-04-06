@@ -48,7 +48,7 @@ Once groups are found, representative items from each group are examined, and a 
 
 ## Improving Results
 
-1. **Better embeddings**: Use OpenAI or sentence-transformers instead of TF-IDF for text data
+1. **Better embeddings**: Use sentence-transformers instead of TF-IDF for text data
 2. **Feature selection**: If using numeric data, focus on columns most relevant to your grouping objective
 3. **More data**: Clustering works better with more examples to learn from
 4. **Cleaner data**: Remove or fill missing values before clustering

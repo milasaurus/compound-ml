@@ -61,8 +61,8 @@ Report the plan:
 ### Phase 3: Generate Representations (if clustering or anomaly detection selected)
 
 Follow the same embedding/representation logic as `ml-cluster` Phase 2:
-- Detect embedding provider (OpenAI > sentence-transformers > TF-IDF fallback)
-- For text: generate embeddings. Estimate cost and confirm for >5000 rows with API embeddings
+- Detect embedding provider (sentence-transformers > TF-IDF fallback)
+- For text: generate embeddings using sentence-transformers if available
 - For numeric: scale features with StandardScaler
 - For mixed: concatenate embedded text with scaled numeric
 
