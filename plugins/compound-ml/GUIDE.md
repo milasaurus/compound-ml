@@ -141,6 +141,8 @@ The objective is optional but improves labeling. Without it, the skill finds the
 - Quality indicator (good/fair/poor separation)
 - Suggested next steps
 
+<img width="1673" height="289" alt="image" src="https://github.com/user-attachments/assets/7bc32547-d01e-419e-a95c-2fe9baf1c6da" />
+
 **Tips:**
 - **Text data quality depends on your embedding provider.** The skill auto-detects what's available:
   1. sentence-transformers (if installed) — good quality, free, runs locally
