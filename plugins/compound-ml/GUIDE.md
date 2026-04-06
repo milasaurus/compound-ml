@@ -84,7 +84,7 @@ Here's how the skills fit together:
 
 **Start with `ml-explore`** to understand your data, then pick a specific skill based on what you want to learn. Or skip straight to `ml-analyze` to run the full pipeline automatically.
 
-<img width="1713" height="934" alt="image" src="https://github.com/user-attachments/assets/a08d583e-97cc-480d-8d92-3ab9d3d16ffb" />
+<img width="1708" height="1022" alt="image" src="https://github.com/user-attachments/assets/c19556ac-060d-433d-8100-b552c2aff2e1" />
 
 ---
 
