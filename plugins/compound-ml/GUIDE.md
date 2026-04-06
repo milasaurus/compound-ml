@@ -86,8 +86,6 @@ Here's how the skills fit together:
 
 **Start with `ml-explore`** to understand your data, then pick a specific skill based on what you want to learn. Or skip straight to `ml-analyze` to run the full pipeline automatically.
 
-<img width="1708" height="1022" alt="image" src="https://github.com/user-attachments/assets/c19556ac-060d-433d-8100-b552c2aff2e1" />
-
 ---
 
 ## Skills
@@ -113,6 +111,8 @@ Pass a file (CSV, JSON, Parquet) or a directory of text files (.txt, .md).
 - Column-by-column profile — distributions for numbers, top values for text, date ranges
 - Data quality summary — missing values, type issues
 - Suggested next steps based on what the data looks like
+
+<img width="1708" height="1022" alt="image" src="https://github.com/user-attachments/assets/c19556ac-060d-433d-8100-b552c2aff2e1" />
 
 **Tips:**
 - This is the lowest-friction skill — it only needs pandas. No embeddings, no API keys.
