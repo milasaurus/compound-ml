@@ -57,17 +57,57 @@ Examples:
 
 ## Python Execution Conventions
 
-- Use `Bash(python3 -c "...")` for inline Python scripts
+- **Always use `uv run` to execute Python.** Never call bare `python3` — always use `uv run python3`. This automatically uses the project's `.venv` without manual activation.
+- For short scripts (under ~20 lines with no nested quotes), use `Bash(uv run python3 -c "...")`
+- For longer or complex scripts, write the script to a temp file first, then execute it. This avoids quoting and escaping issues with heredocs and f-strings:
+  ```
+  Write /tmp/ml_task.py  (the Python code)
+  Bash(uv run python3 /tmp/ml_task.py)
+  ```
+  Always use `/tmp/ml_*.py` as the naming convention so they're naturally cleaned up
 - Use `timeout: 600000` (10 minutes) for long-running operations (UMAP, large embeddings, HDBSCAN)
 - Break large computations into stages with intermediate file I/O
-- Check for required packages at startup with `python3 -c "import X"` before using them
+- Check for required packages at startup with `uv run python3 -c "import X"` before using them
 - If a package is missing, report the install command rather than auto-installing
+- When selecting columns by dtype, use `select_dtypes(include=["object", "str"])` for text columns — pandas 3.x requires explicit `"str"` inclusion
 
 ## Embedding Provider Detection
 
 Skills that need embeddings follow this detection cascade:
-1. Local sentence-transformers — check `python3 -c "import sentence_transformers"`
+1. Local sentence-transformers — check `uv run python3 -c "import sentence_transformers"`
 2. TF-IDF fallback — always available via sklearn (not viable for RAG)
+
+## Embedding Cache
+
+Skills that generate embeddings or scaled representations must use a shared cache at `.ml-checkpoints/_embeddings/` to avoid redundant computation across skills.
+
+**Cache key:** `<filename>_<row_count>_<provider>_<column_hash>.npy` where:
+- `filename` — the source data file name (without path)
+- `row_count` — number of rows in the dataset
+- `provider` — `sentence-transformers`, `tfidf`, or `numeric`
+- `column_hash` — first 8 chars of MD5 hash of sorted column names used
+
+**Before generating representations**, check for a matching cache file:
+
+```python
+import hashlib, os, numpy as np
+cache_dir = ".ml-checkpoints/_embeddings"
+col_hash = hashlib.md5(",".join(sorted(columns)).encode()).hexdigest()[:8]
+cache_key = f"{filename}_{row_count}_{provider}_{col_hash}.npy"
+cache_path = os.path.join(cache_dir, cache_key)
+if os.path.exists(cache_path):
+    representations = np.load(cache_path)
+    print(f"Loaded cached embeddings from {cache_path}")
+```
+
+**After generating representations**, save to cache:
+
+```python
+os.makedirs(cache_dir, exist_ok=True)
+np.save(cache_path, representations)
+```
+
+Cache files have no expiry — they remain valid as long as the source data hasn't changed (keyed by filename + row count + columns). The cache directory is gitignored via `.ml-checkpoints/`.
 
 ## Checkpointing
 

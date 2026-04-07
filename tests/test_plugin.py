@@ -11,8 +11,6 @@ import subprocess
 import tempfile
 from pathlib import Path
 
-import re
-
 import pytest
 
 # ---------------------------------------------------------------------------
@@ -25,6 +23,7 @@ PLUGIN_DIR = REPO_ROOT / "plugins" / "compound-ml"
 PLUGIN_JSON = PLUGIN_DIR / ".claude-plugin" / "plugin.json"
 SKILLS_DIR = PLUGIN_DIR / "skills"
 AGENTS_DIR = PLUGIN_DIR / "agents"
+AGENTS_MD = PLUGIN_DIR / "AGENTS.md"
 
 EXPECTED_SKILLS = ["ml-explore", "ml-cluster", "ml-anomalies", "ml-rag", "ml-analyze"]
 EXPECTED_AGENTS = [
@@ -55,12 +54,13 @@ def parse_skill_frontmatter(skill_path: Path) -> dict:
 
 
 def run_python(code: str, timeout: int = 30) -> subprocess.CompletedProcess:
-    """Run a Python snippet and return the completed process."""
+    """Run a Python snippet via uv run and return the completed process."""
     return subprocess.run(
-        ["python3", "-c", code],
+        ["uv", "run", "python3", "-c", code],
         capture_output=True,
         text=True,
         timeout=timeout,
+        cwd=str(REPO_ROOT),
     )
 
 
@@ -104,6 +104,21 @@ class TestPluginStructure:
     def test_agents_directory_exists(self):
         assert AGENTS_DIR.is_dir(), "Missing plugins/compound-ml/agents/"
 
+    def test_license_file_exists(self):
+        assert (REPO_ROOT / "LICENSE").exists(), "Missing LICENSE file"
+
+    def test_gitignore_has_checkpoints(self):
+        gitignore = (REPO_ROOT / ".gitignore").read_text()
+        assert ".ml-checkpoints/" in gitignore, ".ml-checkpoints/ not in .gitignore"
+
+    def test_gitignore_has_rag_index(self):
+        gitignore = (REPO_ROOT / ".gitignore").read_text()
+        assert ".ml-rag-index/" in gitignore, ".ml-rag-index/ not in .gitignore"
+
+    def test_gitignore_has_pycache(self):
+        gitignore = (REPO_ROOT / ".gitignore").read_text()
+        assert "__pycache__/" in gitignore, "__pycache__/ not in .gitignore"
+
 
 # ===========================================================================
 # 2. Skill loading — each skill has valid SKILL.md with correct frontmatter
@@ -141,7 +156,6 @@ class TestSkillLoading:
         """Description values containing colons must be quoted in YAML."""
         raw = (SKILLS_DIR / skill_name / "SKILL.md").read_text()
         _, fm_raw, _ = raw.split("---", 2)
-        # Find the description line — it should start with quotes if it contains ':'
         for line in fm_raw.strip().splitlines():
             if line.startswith("description:"):
                 value = line.split("description:", 1)[1].strip()
@@ -149,6 +163,18 @@ class TestSkillLoading:
                     assert value.startswith('"') or value.startswith("'"), (
                         f"Skill {skill_name}: description contains ':' but is not quoted"
                     )
+
+    @pytest.mark.parametrize("skill_name", EXPECTED_SKILLS)
+    def test_skill_has_reference_files(self, skill_name):
+        """Every skill should have a references/ directory with at least one file."""
+        refs_dir = SKILLS_DIR / skill_name / "references"
+        if skill_name == "ml-analyze":
+            # ml-analyze references workflow-guide.md
+            assert refs_dir.is_dir(), f"{skill_name} missing references/ directory"
+            assert any(refs_dir.iterdir()), f"{skill_name} references/ is empty"
+        elif skill_name in ("ml-explore", "ml-cluster", "ml-anomalies", "ml-rag"):
+            assert refs_dir.is_dir(), f"{skill_name} missing references/ directory"
+            assert any(refs_dir.iterdir()), f"{skill_name} references/ is empty"
 
 
 # ===========================================================================
@@ -273,7 +299,101 @@ if ext not in supported:
 
 
 # ===========================================================================
-# 5. End-to-end — ml-explore on the Spotify dataset
+# 5. Embedding cache
+# ===========================================================================
+
+
+class TestEmbeddingCache:
+    """Embedding cache conventions are documented and consistent."""
+
+    def test_agents_md_has_cache_section(self):
+        """AGENTS.md must define the embedding cache convention."""
+        content = AGENTS_MD.read_text()
+        assert "Embedding Cache" in content, "AGENTS.md missing Embedding Cache section"
+        assert "_embeddings" in content, "AGENTS.md missing _embeddings cache directory"
+
+    def test_agents_md_cache_key_format(self):
+        """Cache key must include filename, row_count, provider, and column_hash."""
+        content = AGENTS_MD.read_text()
+        for component in ["filename", "row_count", "provider", "column_hash"]:
+            assert component in content, f"Cache key missing component: {component}"
+
+    @pytest.mark.parametrize("skill_name", ["ml-cluster", "ml-anomalies", "ml-analyze"])
+    def test_skills_reference_embedding_cache(self, skill_name):
+        """Skills that generate representations must reference the shared cache."""
+        content = (SKILLS_DIR / skill_name / "SKILL.md").read_text()
+        assert "embedding cache" in content.lower() or "shared" in content.lower(), (
+            f"Skill {skill_name} does not reference the shared embedding cache"
+        )
+
+    def test_cache_dir_is_gitignored(self):
+        """The embedding cache lives under .ml-checkpoints/ which is gitignored."""
+        gitignore = (REPO_ROOT / ".gitignore").read_text()
+        assert ".ml-checkpoints/" in gitignore
+
+    def test_cache_key_generation(self):
+        """Cache key generation produces deterministic, unique keys."""
+        result = run_python("""
+import hashlib
+columns = ["age", "score", "name"]
+col_hash = hashlib.md5(",".join(sorted(columns)).encode()).hexdigest()[:8]
+cache_key = f"dataset.csv_1000_numeric_{col_hash}.npy"
+print(f"KEY: {cache_key}")
+
+# Same columns in different order should produce same hash
+columns2 = ["score", "name", "age"]
+col_hash2 = hashlib.md5(",".join(sorted(columns2)).encode()).hexdigest()[:8]
+assert col_hash == col_hash2, "Column order should not affect hash"
+print("ORDER_INVARIANT: True")
+
+# Different columns should produce different hash
+columns3 = ["age", "score", "weight"]
+col_hash3 = hashlib.md5(",".join(sorted(columns3)).encode()).hexdigest()[:8]
+assert col_hash != col_hash3, "Different columns should produce different hash"
+print("UNIQUE: True")
+""")
+        assert result.returncode == 0, f"Failed: {result.stderr}"
+        assert "ORDER_INVARIANT: True" in result.stdout
+        assert "UNIQUE: True" in result.stdout
+
+
+# ===========================================================================
+# 7. UMAP skip logic
+# ===========================================================================
+
+
+class TestUmapSkipLogic:
+    """UMAP should only run when representations exceed 50 dimensions."""
+
+    def test_cluster_skill_has_skip_conditions(self):
+        """ml-cluster must document when to skip UMAP."""
+        content = (SKILLS_DIR / "ml-cluster" / "SKILL.md").read_text()
+        assert "Skip UMAP" in content or "skip UMAP" in content, (
+            "ml-cluster missing UMAP skip conditions"
+        )
+
+    def test_cluster_skill_50_dim_threshold(self):
+        """ml-cluster should use 50 dimensions as the UMAP threshold."""
+        content = (SKILLS_DIR / "ml-cluster" / "SKILL.md").read_text()
+        assert "50" in content, "ml-cluster missing 50-dimension UMAP threshold"
+
+    def test_cluster_skill_skips_for_numeric(self):
+        """ml-cluster should skip UMAP for purely numeric data."""
+        content = (SKILLS_DIR / "ml-cluster" / "SKILL.md").read_text().lower()
+        assert "numeric" in content and "skip" in content, (
+            "ml-cluster should document skipping UMAP for numeric-only data"
+        )
+
+    def test_analyze_skill_has_umap_skip(self):
+        """ml-analyze should also document conditional UMAP usage."""
+        content = (SKILLS_DIR / "ml-analyze" / "SKILL.md").read_text()
+        assert "50" in content and "UMAP" in content, (
+            "ml-analyze missing UMAP skip logic"
+        )
+
+
+# ===========================================================================
+# 8. End-to-end — ml-explore on the Spotify dataset
 # ===========================================================================
 
 
@@ -318,7 +438,7 @@ if missing.sum() == 0:
 
 # Modeling suggestions based on data characteristics
 suggestions = []
-text_cols = df.select_dtypes(include=["object"]).columns
+text_cols = df.select_dtypes(include=["object", "str"]).columns
 numeric_cols = df.select_dtypes(include=["number"]).columns
 
 if len(text_cols) > 0:

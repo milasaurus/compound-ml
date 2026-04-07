@@ -22,8 +22,10 @@ If no context is provided, detect the most statistically unusual items across al
 Check required packages:
 
 ```bash
-python3 -c "import pandas; import sklearn; print('Core packages available')"
+uv run python3 -c "import pandas; import sklearn; print('Core packages available')"
 ```
+
+Use `uv run python3` for all Python calls in this skill.
 
 If pandas or sklearn are missing, report install instructions and stop.
 
@@ -38,6 +40,8 @@ Write data profile to checkpoint: `.ml-checkpoints/ml-anomalies/<timestamp>/prof
 
 ### Phase 2: Generate Representations
 
+**First, check the shared embedding cache** (see AGENTS.md "Embedding Cache" section). If a cached representation exists for this file, load it and skip to Phase 3.
+
 Follow the same representation strategy as `ml-cluster`:
 
 **For text data:** Detect embedding provider (sentence-transformers > TF-IDF fallback).
@@ -46,7 +50,7 @@ Follow the same representation strategy as `ml-cluster`:
 
 **For mixed data:** Embed text columns and concatenate with scaled numeric features.
 
-Write representations to checkpoint: `.ml-checkpoints/ml-anomalies/<timestamp>/representations.npy`
+Write representations to the shared embedding cache (see AGENTS.md) and to the skill checkpoint: `.ml-checkpoints/ml-anomalies/<timestamp>/representations.npy`
 
 ### Phase 3: Run Anomaly Detectors
 

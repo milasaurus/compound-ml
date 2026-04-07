@@ -22,15 +22,17 @@ If no objective is provided, discover the most natural groupings in the data.
 Check required packages:
 
 ```bash
-python3 -c "import pandas; import sklearn; print('Core packages available')"
+uv run python3 -c "import pandas; import sklearn; print('Core packages available')"
 ```
+
+Use `uv run python3` for all Python calls in this skill.
 
 If pandas or sklearn are missing, report install instructions and stop.
 
 Check optional packages (non-blocking):
 
 ```bash
-python3 -c "
+uv run python3 -c "
 try: import umap; print('umap: available')
 except ImportError: print('umap: not available (will skip dimensionality reduction)')
 try: import hdbscan; print('hdbscan: available')
@@ -46,6 +48,8 @@ Load and profile the data using the same approach as `ml-explore` Phase 2. Ident
 Write the loaded data profile to checkpoint: `.ml-checkpoints/ml-cluster/<timestamp>/profile.json`
 
 ### Phase 2: Generate Representations
+
+**First, check the shared embedding cache** (see AGENTS.md "Embedding Cache" section). If a cached representation exists for this file, load it and skip to Phase 3.
 
 Choose representation strategy based on data type:
 
@@ -64,11 +68,17 @@ Use the numeric columns directly. Apply `sklearn.preprocessing.StandardScaler` t
 
 Embed text columns and concatenate with scaled numeric features.
 
-Write representations to checkpoint: `.ml-checkpoints/ml-cluster/<timestamp>/representations.npy`
+Write representations to the shared embedding cache (see AGENTS.md) and to the skill checkpoint: `.ml-checkpoints/ml-cluster/<timestamp>/representations.npy`
 
-### Phase 3: Dimensionality Reduction
+### Phase 3: Dimensionality Reduction (Conditional)
 
-If UMAP is available AND the representation has more than 50 dimensions:
+**Skip UMAP entirely when:**
+- The representation has 50 or fewer dimensions (already low-dimensional — UMAP adds cost with no benefit)
+- The data is purely numeric with no text embedding (scaled numeric features are already suitable for clustering/anomaly detection)
+- UMAP is not installed
+
+**Use UMAP only when:**
+- UMAP is available AND the representation has more than 50 dimensions (typically from text embeddings like sentence-transformers at 384d or TF-IDF at up to 5000d)
 
 ```python
 import umap
@@ -77,8 +87,6 @@ reduced = reducer.fit_transform(representations)
 ```
 
 Run this with `timeout: 600000` — UMAP can be slow on large datasets.
-
-If UMAP is not available, skip this step. Clustering will work on the raw representations (sklearn handles high-dimensional data).
 
 Write reduced representations to checkpoint: `.ml-checkpoints/ml-cluster/<timestamp>/reduced.npy`
 
