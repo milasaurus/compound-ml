@@ -21,6 +21,8 @@ If no objective is provided, run a general analysis: profile, cluster, and check
 
 ### Phase 1: Environment Check and Data Profiling
 
+Use `uv run python3` for all Python calls in this skill.
+
 Check core packages (pandas, sklearn). Report and stop if missing.
 
 Check optional packages (umap, hdbscan, sentence-transformers, matplotlib) and note which are available — this affects which analysis methods can run.
@@ -60,24 +62,26 @@ Report the plan:
 
 ### Phase 3: Generate Representations (if clustering or anomaly detection selected)
 
+**First, check the shared embedding cache** (see AGENTS.md "Embedding Cache" section). If a cached representation exists for this file, load it and skip to Phase 4. This is especially valuable for ml-analyze since users often run ml-explore first.
+
 Follow the same embedding/representation logic as `ml-cluster` Phase 2:
 - Detect embedding provider (sentence-transformers > TF-IDF fallback)
 - For text: generate embeddings using sentence-transformers if available
 - For numeric: scale features with StandardScaler
 - For mixed: concatenate embedded text with scaled numeric
 
-Write to checkpoint: `.ml-checkpoints/ml-analyze/<timestamp>/representations.npy`
+Write to the shared embedding cache (see AGENTS.md) and to checkpoint: `.ml-checkpoints/ml-analyze/<timestamp>/representations.npy`
 
 Use `timeout: 600000` for embedding generation on large datasets.
 
 ### Phase 4: Execute Analysis
 
-Run each selected analysis method:
+**When both clustering and anomaly detection are selected, run them in parallel** using the Agent tool. Launch two agents simultaneously in a single message — one for each analysis. Both read from the same representations checkpoint written in Phase 3.
 
-**Clustering** (if selected):
+**Clustering agent** (if selected):
 
-Follow `ml-cluster` Phases 3-5:
-1. Dimensionality reduction with UMAP if available and >50 dimensions
+Launch an Agent with a prompt that includes the file path, checkpoint directory, representations path, data profile, objective, and available packages. The agent should follow `ml-cluster` Phases 3-5:
+1. Dimensionality reduction with UMAP only if available AND representations have >50 dimensions (skip for numeric-only data or low-dimensional features)
 2. Cluster with HDBSCAN or KMeans
 3. Evaluate quality (silhouette score)
 4. Sample representatives per cluster
@@ -85,9 +89,9 @@ Follow `ml-cluster` Phases 3-5:
 
 Write to checkpoint: `.ml-checkpoints/ml-analyze/<timestamp>/clusters.json`
 
-**Anomaly detection** (if selected):
+**Anomaly detection agent** (if selected):
 
-Follow `ml-anomalies` Phases 3-4:
+Launch an Agent with a prompt that includes the file path, checkpoint directory, representations path, data profile, objective, and available packages. The agent should follow `ml-anomalies` Phases 3-4:
 1. Run Isolation Forest and Local Outlier Factor
 2. Compute consensus scores
 3. Select top anomalies
@@ -95,7 +99,9 @@ Follow `ml-anomalies` Phases 3-4:
 
 Write to checkpoint: `.ml-checkpoints/ml-analyze/<timestamp>/anomalies.json`
 
-Use `timeout: 600000` for UMAP and clustering on large datasets.
+Use `timeout: 600000` for both agents. If only one analysis is selected, run it directly without spawning an agent.
+
+Wait for both agents to complete before proceeding to Phase 5.
 
 ### Phase 5: Quality Review
 

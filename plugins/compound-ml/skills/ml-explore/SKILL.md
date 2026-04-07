@@ -22,11 +22,13 @@ If no argument is provided, scan the working directory for data files and ask wh
 
 ### Phase 1: Environment Check
 
-Verify Python and pandas are available:
+Verify pandas is available:
 
 ```bash
-python3 -c "import pandas; print(f'pandas {pandas.__version__}')"
+uv run python3 -c "import pandas; print(f'pandas {pandas.__version__}')"
 ```
+
+Use `uv run python3` for all Python calls in this skill.
 
 If pandas is not installed, report:
 
@@ -42,7 +44,7 @@ Do not proceed until the environment check passes.
 
 #### For tabular files (CSV, JSON, Parquet)
 
-Run a Python script via `Bash(python3 -c "...")` that:
+Run a Python script via `Bash(uv run python3 -c "...")` that:
 
 1. Loads the file with pandas (detect format from extension)
 2. If the file has more than 50,000 rows, sample 50,000 rows and note this in output
@@ -72,7 +74,7 @@ Run a Python script that:
 
 Attempt to generate distribution visualizations:
 
-1. Check if matplotlib is available: `python3 -c "import matplotlib"`
+1. Check if matplotlib is available: `uv run python3 -c "import matplotlib"`
 2. If available, generate a summary visualization:
    - For tabular data: histograms of numeric columns (save to a temp PNG file)
    - For text data: bar chart of document length distribution

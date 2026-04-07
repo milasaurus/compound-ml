@@ -2,3 +2,6 @@ docs/
 data/
 .venv/
 .ml-checkpoints/
+__pycache__/
+*.pyc
+.ml-rag-index/

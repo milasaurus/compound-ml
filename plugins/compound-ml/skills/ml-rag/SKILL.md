@@ -28,13 +28,15 @@ If no mode is specified, check if an index exists in `.ml-rag-index/`:
 Verify required packages:
 
 ```bash
-python3 -c "
+uv run python3 -c "
 import chromadb; print(f'chromadb {chromadb.__version__}')
 try:
     import sentence_transformers; print('sentence-transformers: available')
 except ImportError: print('sentence-transformers: NOT installed')
 "
 ```
+
+Use `uv run python3` for all Python calls in this skill.
 
 **Required:** chromadb. If not installed:
 > ChromaDB is required for RAG pipelines. Install it with:
